@@ -7,11 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.revature.services.UserService;
 import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.util.ConnectionUtil;
@@ -73,23 +72,23 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public Set<User> getAllUsers() {
+	public List<User> getAllUsers() {
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "SELECT user_id,username,pwd,first_name,last_name,email,role_name FROM bank_user bu inner join user_role ur ON bu.role_id = ur.role_id;";
 			
 			Statement statement = conn.createStatement();
 			
-			Set<User> set = new HashSet<>();
+			List<User> list = new ArrayList<>();
 			
 			ResultSet result = statement.executeQuery(sql);
 			
 			while(result.next()) {
-				set.add(new User(result.getInt("user_id"), result.getString("username"),
+				list.add(new User(result.getInt("user_id"), result.getString("username"),
 						result.getString("pwd"), result.getString("first_name"), result.getString("last_name"),result.getString("email"),result.getString("role_name")));
 			}
 			
-			return set;
+			return list;
 			
 		}catch(SQLException e) {
 			System.out.println(e);
@@ -101,6 +100,7 @@ public class UserDAOImpl implements UserDAO{
 
 	@Override
 	public boolean updateUser(User user) {
+		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			int index =0;
 			String sql = "UPDATE bank_user SET "
@@ -131,16 +131,20 @@ public class UserDAOImpl implements UserDAO{
 
 	@Override
 	public User getUserById(Integer user_id) {
-		try(Connection conn =ConnectionUtil.getConnection()){
+		
+		System.out.println("in DAO");
+		try(Connection conn = ConnectionUtil.getConnection()){
+			
 			String sql = "SELECT * FROM bank_user WHERE user_id =?";
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1, user_id);
 			
 			ResultSet result = statement.executeQuery();
-
+			
 			if(result.next()) {
 				
 				return new User(result.getInt("user_id"),result.getString("username"),result.getString("pwd"),result.getString("first_name"),result.getString("last_name"),result.getString("email"),result.getInt("role_id"));
+				//System.out.println(User.);
 			}
 		}catch(SQLException e) {
 			System.out.println(e);
@@ -150,7 +154,7 @@ public class UserDAOImpl implements UserDAO{
 
 
 	@Override
-	public Role getUserByRoleId(Integer role_id) {
+	public Role getUserRoleByRoleId(Integer role_id) {
 		
 		try(Connection conn =ConnectionUtil.getConnection()){
 			
@@ -173,7 +177,7 @@ public class UserDAOImpl implements UserDAO{
 
 
 	@Override
-	public Role getUserByRoleName(String role_name) {
+	public Role getUserRoleByRoleName(String role_name) {
 		
 		try(Connection conn =ConnectionUtil.getConnection()){
 			
@@ -192,6 +196,13 @@ public class UserDAOImpl implements UserDAO{
 		}
 		
 		return null;
+	}
+
+
+	@Override
+	public boolean checkUsernameEmailExist(User user) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

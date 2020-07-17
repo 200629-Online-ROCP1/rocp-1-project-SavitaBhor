@@ -9,21 +9,23 @@ public interface UserDAO {
 	
 	
 	
-	boolean updateUser(User user);
+	public boolean updateUser(User user);
 	
-	boolean insertUser(User user);
+	public boolean checkUsernameEmailExist(User user);
 	
-	User getUserByUserName(String username);
+	public boolean insertUser(User user);
 	
-	User getUserById(Integer user_id);
+	public User getUserByUserName(String username);
 	
-	Role getUserByRoleId(Integer role_id);
+	public User getUserById(Integer user_id);
 	
-	Role getUserByRoleName(String role_name);
+	public Role getUserRoleByRoleId(Integer role_id);
+	
+	public Role getUserRoleByRoleName(String role_name);
 	
 	
 	
-	Set<User> getAllUsers();
+	public List<User> getAllUsers();
 
 	
 	

@@ -91,6 +91,7 @@ public class AccountDAOImpl implements AccountDAO{
 				
 				return new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id"));
 			}
+			
 		}catch(SQLException e) {
 			System.out.println(e);
 		}
@@ -184,7 +185,7 @@ public class AccountDAOImpl implements AccountDAO{
 			while(result.next()) {
 				
 				set.add(new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id")));
-				System.out.println(result.getInt("acc_id"));
+				//System.out.println(result.getInt("acc_id"));
 			}
 			
 			return set;
