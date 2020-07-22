@@ -1,5 +1,6 @@
 package com.revature.repos;
 
+import java.util.List;
 import java.util.Set;
 
 import com.revature.models.Account;
@@ -12,11 +13,13 @@ public interface AccountDAO {
 	
 	//boolean deleteAccount(Account account);
 	
-    //boolean saveAccount(Account account);
+    boolean saveAccountBalance(Account account);
 	
 	Account getAccountById(Integer AccountId);
 	
 	Account getAccountByUserid(Integer UserId);
+	
+	Account getAccountByStatusId(Integer StatusId);
 	
 	boolean updateAccount(Account account);
 	
@@ -24,9 +27,11 @@ public interface AccountDAO {
 	
 	AccountType getAccountByType(Integer TypeId);
 	
-	Account findAccounts(Account account);
+	//Account findAccounts(Account account);
 	
-	public Set <Account> showAllAccounts();
+	public List <Account> showAllAccounts();
+	
+	public Account showSubmittedAccount(Integer UserId);
 	
 	
 

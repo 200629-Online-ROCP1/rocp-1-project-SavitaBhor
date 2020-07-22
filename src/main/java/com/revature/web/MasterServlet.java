@@ -1,10 +1,6 @@
 package com.revature.web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +11,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.controllers.AccountController;
 import com.revature.controllers.LoginController;
 import com.revature.controllers.UserController;
-import com.revature.models.User;
+import com.revature.models.LoginDTO;
+
 
 public class MasterServlet extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final ObjectMapper om = new ObjectMapper();
 	private static final UserController uc = new UserController();
 	private static final LoginController lc = new LoginController();
 	private static final AccountController ac = new AccountController();
+	
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -36,87 +38,71 @@ public class MasterServlet extends HttpServlet {
 
 		String[] portions = URI.split("/");
 
-//		System.out.println(Arrays.toString(portions));
-//		System.out.println(portions.length);
+		HttpSession ses = req.getSession(false);
+		String logedInUser = null;
+		if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
+
+			LoginDTO user = (LoginDTO) ses.getAttribute("user");
+			logedInUser = user.getUsername();
+
+		}
 
 		try {
 			switch (portions[0]) {
-			case "user":
-				HttpSession ses = req.getSession(false);
-				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
+			/*------------------------------------------------------------------------------*/
+			case "users":
+				
+				if (logedInUser != null) {
 					
-					
-					
-//					if (portions.length == 2) {
-//
-//						int uid = Integer.parseInt(portions[1]);
-//						User u = uc.getUserById(uid);
-//						System.out.println(uid);
-//						res.setStatus(200);
-//						// The ObjectMapper (om) here will take the object (a) and convert it to a JSON
-//						// object String.
-//						String json = om.writeValueAsString(u);
-//						res.getWriter().println(json);
-//					} else {
-//						if (req.getMethod().equals("POST")) {
-//							BufferedReader reader = req.getReader();
-//
-//							StringBuilder s = new StringBuilder();
-//
-//							String line = reader.readLine();
-//
-//							while (line != null) {
-//								s.append(line);
-//								line = reader.readLine();
-//							}
-//
-//							String body = new String(s);
-//
-//							System.out.println(body);
-//
-//							User u = om.readValue(body, User.class);
-//
-//							System.out.println(u);
-//
-//							if (uc.registerUser(u)) {
-//								System.out.println("in add User if statement");
-//								res.setStatus(201);
-//								res.getWriter().println("User was created");
-//							}
-//
-//						} else {
-//
-//							List<User> all = uc.getAllUsers();
-//							res.setStatus(200);
-//							res.getWriter().println(om.writeValueAsString(all));
-//
-//						}
-//					}
-					
-				} else {
-					res.setStatus(401);
-					res.getWriter().println("You must be logged in to do that!");
-				}
-				break;
-			case "account":
-				ses = req.getSession(false);
-				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
-					if (req.getMethod().equals("POST")) {
-						ac.handlePost(req, res, portions);
-					} else {
-						ac.handGet(req, res, portions);
+					if (req.getMethod().equals("PUT")) {
+						
+						uc.handlePut(req, res, portions,logedInUser);
+					} else if (req.getMethod().equals("GET")) {
+						uc.handleGet(req, res, portions,logedInUser);
 					}
 				} else {
 					res.setStatus(401);
 					res.getWriter().println("You must be logged in to do that!");
 				}
-
 				break;
+			/*-------------------------------------------------------------------------------*/
+			case "accounts":
+				
+				if (logedInUser != null) {
+					
+					if (req.getMethod().equals("POST")) {
+						ac.handlePost(req, res, portions,logedInUser);
+					} else if (req.getMethod().equals("GET")){
+						ac.handleGet(req, res, portions,logedInUser);
+					}else if (req.getMethod().equals("PUT")) {
+						ac.handlePut(req, res, portions,logedInUser);
+					}
+				} else {
+					res.setStatus(401);
+					res.getWriter().println("You must be logged in to do that!");
+				}
+				break;
+			/*-------------------------------------------------------------------------------------*/
+			case "register":
+				if (logedInUser != null) {
+					if (req.getMethod().equals("POST")) {
+						uc.handlePost(req, res, portions,logedInUser);
+					}
+				}else {
+					res.setStatus(401);
+					res.getWriter().println("You must be logged in to do that!");
+				}
+				break;
+				
+			/*--------------------------------------------------------------------------------------*/
 			case "login":
 				lc.login(req, res);
 				break;
+			/*-----------------------------------------------------------------------------------------*/
 			case "logout":
 				lc.logout(req, res);
+				break;
+			/*-----------------------------------------------------------------------------------------*/
 
 			}
 		} catch (NumberFormatException e) {
@@ -128,6 +114,10 @@ public class MasterServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doGet(req, res);
+	}
+	
+	protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
 	}
 

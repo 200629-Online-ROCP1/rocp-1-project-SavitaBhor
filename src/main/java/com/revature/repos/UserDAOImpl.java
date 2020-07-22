@@ -39,11 +39,10 @@ public class UserDAOImpl implements UserDAO{
 			statement.setString(++index, user.getLastName());
 			statement.setString(++index, user.getEmail());
 			statement.setInt(++index, user.getRole().getRoleId());
-			
-			if(statement.execute()) {
-				return true;
-			}
-			
+			statement.execute();
+			return true;
+	
+		
 		}catch (SQLException e) {
 			System.out.println(e);
 		}
@@ -108,21 +107,25 @@ public class UserDAOImpl implements UserDAO{
 							+"pwd=?,"
 							+"first_name=?," 
 							+"last_name=?,"
-							+"email=? "
+							+"email=? ,"
+							+"role_id=? "
 							+"WHERE user_id=?";
 		
 			PreparedStatement statement = conn.prepareStatement(sql);
+		
 			statement.setString(++index, user.getUsername());
 			statement.setString(++index, user.getPassword());
 			statement.setString(++index, user.getFirstName());
 			statement.setString(++index, user.getLastName());
 			statement.setString(++index, user.getEmail());
+			statement.setInt(++index, user.getRole().getRoleId());
 			statement.setInt(++index, user.getUserId());
+			statement.execute();
 			
-			if(statement.execute()) {
+			if(statement.getUpdateCount() != 0) {
 				return true;
 			}
-			
+									
 		}catch (SQLException e) {
 			System.out.println(e);
 		}
@@ -132,7 +135,6 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public User getUserById(Integer user_id) {
 		
-		System.out.println("in DAO");
 		try(Connection conn = ConnectionUtil.getConnection()){
 			
 			String sql = "SELECT * FROM bank_user WHERE user_id =?";
@@ -144,7 +146,7 @@ public class UserDAOImpl implements UserDAO{
 			if(result.next()) {
 				
 				return new User(result.getInt("user_id"),result.getString("username"),result.getString("pwd"),result.getString("first_name"),result.getString("last_name"),result.getString("email"),result.getInt("role_id"));
-				//System.out.println(User.);
+				
 			}
 		}catch(SQLException e) {
 			System.out.println(e);

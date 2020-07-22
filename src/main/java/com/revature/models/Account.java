@@ -9,6 +9,7 @@ public class Account {
 	  private double balance;  // not null
 	  private AccountStatus status;
 	  private AccountType type;
+	  private int userId;
 	  
 	public Account() {
 		super();
@@ -27,14 +28,21 @@ public class Account {
 		this.type = type;
 	}
 	
+	public Account(int accountId, double balance, int status, int type, int userId) {
+		super();
+		this.accountId = accountId;
+		this.balance = balance;
+		AccountDAO accountDao = AccountDAOImpl.getInstance();
+		this.status = accountDao.getAccountByStatus(status);
+		this.type = accountDao.getAccountByType(type);
+		this.userId = userId;
+	}
 	public Account(int accountId, double balance, int status, int type) {
 		super();
 		this.accountId = accountId;
 		this.balance = balance;
 		AccountDAO accountDao = AccountDAOImpl.getInstance();
-		
 		this.status = accountDao.getAccountByStatus(status);
-//		System.out.println(this.status );
 		this.type = accountDao.getAccountByType(type);
 	}
 	public int getAccountId() {
@@ -63,6 +71,12 @@ public class Account {
 	}
 	
 	
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

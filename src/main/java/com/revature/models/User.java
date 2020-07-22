@@ -132,6 +132,7 @@ public class User {
 		UserDAO role = UserDAOImpl.getInstance();
 		this.role = role.getUserRoleByRoleId(role_id);
 	}
+	
 
 
 	@Override
@@ -197,7 +198,11 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", email=" + email + ", role=" + role.getRole() + "]";
+				+ firstName + ", lastName=" + lastName + ", email=" + email + ", role=" + role + "]";
+	}
+
+
+	
 	}
 
 
@@ -210,4 +215,4 @@ public class User {
 	  
 	  
 
-}
+
