@@ -288,4 +288,31 @@ public class AccountController {
 
 	}
 
+	public void handleDelete(HttpServletRequest req, HttpServletResponse res, String[] portions, String logedInUser) throws IOException {
+		
+		if (portions.length == 1) {
+			res.setStatus(404);
+			res.getWriter().println("Enter Account number to Delete.");
+				
+		} else if (portions.length == 2) {
+			int accid = Integer.parseInt(portions[1]);
+			Account a = as.getAccountById(accid);
+			if (a != null) {
+				if (vu.isValidRole(logedInUser, "Admin")) {
+					as.deleteAccount(accid);
+					res.setStatus(200);
+					res.getWriter().println("Account Is Deleted.");
+
+				} else {
+					res.setStatus(401);
+					res.getWriter().println("The requested action is not permitted");
+				}
+			} else {
+				res.setStatus(404);
+				res.getWriter().println("Account Number does not exist!");
+			}
+
+		}
+	}
+
 }

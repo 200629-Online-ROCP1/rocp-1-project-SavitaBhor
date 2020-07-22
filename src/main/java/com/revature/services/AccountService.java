@@ -43,6 +43,10 @@ public class AccountService {
 		return accountDao.showSubmittedAccount(UserId);
 	}
 	
+	public boolean deleteAccount(Integer AccountId) {
+		return accountDao.deleteAccount(AccountId);
+	}
+	
 	public boolean withdrawFromAccount(Integer accountId, Double amount) {
 		
 		Account account = accountDao.getAccountById(accountId);

@@ -42,5 +42,9 @@ public class UserService {
 	public User getUserByUserName(String username) {
 		return userDao.getUserByUserName(username);
 	}
+	
+	public boolean deleteUser(Integer user_id) {
+		return userDao.deleteUser(user_id);
+	}
 
 }

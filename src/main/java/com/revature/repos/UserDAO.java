@@ -11,7 +11,7 @@ public interface UserDAO {
 	
 	public boolean updateUser(User user);
 	
-	public boolean checkUsernameEmailExist(User user);
+	//public boolean checkUsernameEmailExist(User user);
 	
 	public boolean insertUser(User user);
 	
@@ -27,13 +27,6 @@ public interface UserDAO {
 	
 	public List<User> getAllUsers();
 
+	boolean deleteUser(Integer user_id);
 	
-	
-	
-	
-	//boolean deleteUser(String userName);
-	
-	
-	
-
 }

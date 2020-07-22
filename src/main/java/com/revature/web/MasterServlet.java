@@ -33,7 +33,7 @@ public class MasterServlet extends HttpServlet {
 		// this will set the default response to not found; we will change it later if
 		// the request was successful
 		res.setStatus(404);
-
+		
 		final String URI = req.getRequestURI().replace("/rocp-project/", "");
 
 		String[] portions = URI.split("/");
@@ -55,10 +55,11 @@ public class MasterServlet extends HttpServlet {
 				if (logedInUser != null) {
 					
 					if (req.getMethod().equals("PUT")) {
-						
 						uc.handlePut(req, res, portions,logedInUser);
 					} else if (req.getMethod().equals("GET")) {
 						uc.handleGet(req, res, portions,logedInUser);
+					}else if (req.getMethod().equals("DELETE")) {
+						uc.handleDelete(req, res, portions,logedInUser);
 					}
 				} else {
 					res.setStatus(401);
@@ -76,6 +77,8 @@ public class MasterServlet extends HttpServlet {
 						ac.handleGet(req, res, portions,logedInUser);
 					}else if (req.getMethod().equals("PUT")) {
 						ac.handlePut(req, res, portions,logedInUser);
+					}else if (req.getMethod().equals("DELETE")) {
+						ac.handleDelete(req, res, portions,logedInUser);
 					}
 				} else {
 					res.setStatus(401);
@@ -84,14 +87,14 @@ public class MasterServlet extends HttpServlet {
 				break;
 			/*-------------------------------------------------------------------------------------*/
 			case "register":
-				if (logedInUser != null) {
+				//if (logedInUser != null) {
 					if (req.getMethod().equals("POST")) {
 						uc.handlePost(req, res, portions,logedInUser);
 					}
-				}else {
-					res.setStatus(401);
-					res.getWriter().println("You must be logged in to do that!");
-				}
+//				}else {
+//					res.setStatus(401);
+//					res.getWriter().println("You must be logged in to do that!");
+//				}
 				break;
 				
 			/*--------------------------------------------------------------------------------------*/
@@ -118,6 +121,10 @@ public class MasterServlet extends HttpServlet {
 	}
 	
 	protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doGet(req, res);
+	}
+	
+	protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
 	}
 

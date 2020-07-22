@@ -40,7 +40,10 @@ public class UserDAOImpl implements UserDAO{
 			statement.setString(++index, user.getEmail());
 			statement.setInt(++index, user.getRole().getRoleId());
 			statement.execute();
-			return true;
+			if(statement.getUpdateCount() != 0) {
+				return true;
+			}
+			//return true;
 	
 		
 		}catch (SQLException e) {
@@ -200,10 +203,23 @@ public class UserDAOImpl implements UserDAO{
 		return null;
 	}
 
-
+	
 	@Override
-	public boolean checkUsernameEmailExist(User user) {
-		// TODO Auto-generated method stub
+	public boolean deleteUser(Integer user_id) {
+		
+		try(Connection conn =ConnectionUtil.getConnection()){
+			String sql = "DELETE FROM bank_user WHERE user_id =?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1, user_id);
+			statement.execute();	
+			
+			if(statement.getUpdateCount() != 0) {
+				return true;
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		return false;
 	}
 

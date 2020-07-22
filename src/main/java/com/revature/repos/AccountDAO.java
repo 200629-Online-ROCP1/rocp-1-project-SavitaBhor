@@ -11,7 +11,7 @@ public interface AccountDAO {
 	
 	boolean submitAccount(Account account);
 	
-	//boolean deleteAccount(Account account);
+	boolean deleteAccount(Integer AccountId);
 	
     boolean saveAccountBalance(Account account);
 	

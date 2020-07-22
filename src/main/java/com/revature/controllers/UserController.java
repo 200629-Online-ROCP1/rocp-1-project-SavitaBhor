@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.revature.models.Account;
 import com.revature.models.User;
 import com.revature.services.UserService;
 import com.revature.util.ValidationUtil;
@@ -38,21 +38,21 @@ public class UserController {
 			String body = new String(s);
 
 			User u = om.readValue(body, User.class);
-			
+
 			if (vu.isValidRole(logedInUser, "Admin") || vu.isIdMatchesCurrentUser(logedInUser, u.getUserId())) {
-				if(!vu.usernameEmailAlreadyExist(u)) {
+				if (!vu.usernameEmailAlreadyExist(u)) {
 					if (us.updateUser(u)) {
-	
+
 						res.setStatus(201);
 						String json = om.writeValueAsString(u);
 						res.getWriter().println(json);
-						//res.getWriter().println("User is Updated");
-					}else {
+						// res.getWriter().println("User is Updated");
+					} else {
 						res.setStatus(400);
 						res.getWriter().println("User Doesn't Exist. ");
 					}
-					
-				}else {
+
+				} else {
 					res.setStatus(400);
 					res.getWriter().println("Invalid fields - username or email is already used ");
 				}
@@ -74,7 +74,8 @@ public class UserController {
 		if (portions.length == 2) {
 
 			int uid = Integer.parseInt(portions[1]);
-			if (vu.isValidRole(logedInUser, "Admin") || vu.isValidRole(logedInUser, "Employee")|| vu.isIdMatchesCurrentUser(logedInUser, uid)) {
+			if (vu.isValidRole(logedInUser, "Admin") || vu.isValidRole(logedInUser, "Employee")
+					|| vu.isIdMatchesCurrentUser(logedInUser, uid)) {
 				User u = us.getUserById(uid);
 				if (u != null) {
 					res.setStatus(200);
@@ -107,10 +108,11 @@ public class UserController {
 		}
 	}
 
-	public void handlePost(HttpServletRequest req, HttpServletResponse res, String[] portions, String logedInUser) throws IOException {
-		
-		if(portions.length == 1){
-			
+	public void handlePost(HttpServletRequest req, HttpServletResponse res, String[] portions, String logedInUser)
+			throws IOException {
+
+		if (portions.length == 1) {
+
 			BufferedReader reader = req.getReader();
 
 			StringBuilder s = new StringBuilder();
@@ -124,31 +126,58 @@ public class UserController {
 			String body = new String(s);
 
 			User u = om.readValue(body, User.class);
-			if (vu.isValidRole(logedInUser, "Admin")) {
-				
-				if(!vu.usernameEmailAlreadyExist(u)) {
-						if (us.registerUser(u)) {
-							User u1 = us.getUserByUserName(u.getUsername());
-							res.setStatus(201);
-							String json = om.writeValueAsString(u1);
-							res.getWriter().println(json);
-							//res.getWriter().println("User is Registered");
-						}
-				}else {
-					res.setStatus(400);
-					res.getWriter().println("Invalid fields - username or email is already used");
+			// if (vu.isValidRole(logedInUser, "Admin")) {
+
+			if (!vu.usernameEmailAlreadyExist(u)) {
+				if (us.registerUser(u)) {
+					User u1 = us.getUserByUserName(u.getUsername());
+					res.setStatus(201);
+					String json = om.writeValueAsString(u1);
+					res.getWriter().println(json);
+					// res.getWriter().println("User is Registered");
 				}
-			}else {
+			} else {
+				res.setStatus(400);
+				res.getWriter().println("Invalid fields - username or email is already used");
+			}
+//			}else {
+//				res.setStatus(401);
+//				res.getWriter().println("The requested action is not permitted");
+//			}
+
+		} else {
+			res.setStatus(404);
+			res.getWriter().println("Check URL");
+		}
+
+	}
+
+	public void handleDelete(HttpServletRequest req, HttpServletResponse res, String[] portions, String logedInUser)
+			throws IOException {
+
+		if (portions.length == 1) {
+			res.setStatus(404);
+			res.getWriter().println("Enter User ID to Delete.");
+
+		} else if (portions.length == 2) {
+
+			if (vu.isValidRole(logedInUser, "Admin")) {
+
+				int userid = Integer.parseInt(portions[1]);
+				User u = us.getUserById(userid);
+				if (u != null) {
+					us.deleteUser(userid);
+					res.setStatus(200);
+					res.getWriter().println("User is Deleted.");
+				} else {
+					res.setStatus(404);
+					res.getWriter().println("UserID does not exist!");
+				}
+			} else {
 				res.setStatus(401);
 				res.getWriter().println("The requested action is not permitted");
 			}
-		
-	}else {
-		res.setStatus(404);
-		res.getWriter().println("Check URL");
+		}
 	}
-		
-	}
-		
-	
+
 }
