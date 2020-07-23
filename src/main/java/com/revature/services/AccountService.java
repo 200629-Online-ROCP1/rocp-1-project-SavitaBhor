@@ -50,6 +50,7 @@ public class AccountService {
 	public boolean withdrawFromAccount(Integer accountId, Double amount) {
 		
 		Account account = accountDao.getAccountById(accountId);
+		//account.getStatus().getStatus()
 		
 		Double oldBalance = account.getBalance();
 		Double newBalance = oldBalance - amount;

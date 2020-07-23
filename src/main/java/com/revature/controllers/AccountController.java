@@ -170,15 +170,19 @@ public class AccountController {
 				if (vu.isValidRole(logedInUser, "Admin") || vu.isOwnerOfAccount(logedInUser, wdto.accountId)) {
 					Account a = as.getAccountById(wdto.accountId);
 					if (a != null) {
-						if (as.withdrawFromAccount(wdto.accountId, wdto.amount)) {
-							res.setStatus(200);
-							res.getWriter()
-									.println("$" + wdto.amount + " has been withdrawn from Account# " + wdto.accountId);
-						} else {
+						if(a.getStatus().getStatus().equalsIgnoreCase("Open")) {
+							if (as.withdrawFromAccount(wdto.accountId, wdto.amount)) {
+								res.setStatus(200);
+								res.getWriter()
+										.println("$" + wdto.amount + " has been withdrawn from Account# " + wdto.accountId);
+							} else {
+								res.setStatus(400);
+								res.getWriter().println("Insuffiecient balance.");
+							}
+						}else {
 							res.setStatus(400);
-							res.getWriter().println("Insuffiecient balance.");
+							res.getWriter().println("Account should be OPEN to withdraw.");
 						}
-
 					} else {
 						res.setStatus(404);
 						res.getWriter().println("The requested Account does not exist.");
@@ -194,10 +198,15 @@ public class AccountController {
 				if (vu.isValidRole(logedInUser, "Admin") || vu.isOwnerOfAccount(logedInUser, ddto.accountId)) {
 					Account a = as.getAccountById(ddto.accountId);
 					if (a != null) {
-						if (as.depositAccount(ddto.accountId, ddto.amount)) {
-							res.setStatus(200);
-							res.getWriter()
-									.println("$" + ddto.amount + " has been deposited to Account# " + ddto.accountId);
+						if(a.getStatus().getStatus().equalsIgnoreCase("Open")) {
+							if (as.depositAccount(ddto.accountId, ddto.amount)) {
+								res.setStatus(200);
+								res.getWriter()
+										.println("$" + ddto.amount + " has been deposited to Account# " + ddto.accountId);
+							}
+						}else {
+							res.setStatus(400);
+							res.getWriter().println("Account should be OPEN to deposit.");
 						}
 					} else {
 						res.setStatus(404);
@@ -215,14 +224,18 @@ public class AccountController {
 					Account a1 = as.getAccountById(tdto.sourceAccountId);
 					Account a2 = as.getAccountById(tdto.targetAccountId);
 					if (a1 != null && a2 != null) {
-						
-						if (as.transferBetweenAccounts(tdto.sourceAccountId, tdto.targetAccountId, tdto.amount)) {
-							res.setStatus(200);
-							res.getWriter().println("$" + tdto.amount + " has been transferred from Account# "
-									+ tdto.sourceAccountId + " to Account# " + tdto.targetAccountId);
-						} else {
+						if(a1.getStatus().getStatus().equalsIgnoreCase("Open") && a2.getStatus().getStatus().equalsIgnoreCase("Open")) {
+							if (as.transferBetweenAccounts(tdto.sourceAccountId, tdto.targetAccountId, tdto.amount)) {
+								res.setStatus(200);
+								res.getWriter().println("$" + tdto.amount + " has been transferred from Account# "
+										+ tdto.sourceAccountId + " to Account# " + tdto.targetAccountId);
+							} else {
+								res.setStatus(400);
+								res.getWriter().println("Insuffiecient balance to transfer.");
+							}
+						}else {
 							res.setStatus(400);
-							res.getWriter().println("Insuffiecient balance to transfer.");
+							res.getWriter().println("Both Accounts should be OPEN to transfer.");
 						}
 					} else {
 						res.setStatus(404);
