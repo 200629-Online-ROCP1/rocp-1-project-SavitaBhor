@@ -68,10 +68,11 @@ public class AccountController {
 
 				if (vu.isValidRole(logedInUser, "Admin") || vu.isValidRole(logedInUser, "Employee")) {
 					int statusid = Integer.parseInt(portions[2]);
-					Account a = as.getAccountByStatusId(statusid);
-					if (a != null) {
+					//Account a = as.getAccountByStatusId(statusid);
+					List<Account> all = as.getAccountByStatusId(statusid);
+					if (all != null) {
 						res.setStatus(200);
-						String json = om.writeValueAsString(a);
+						String json = om.writeValueAsString(all);
 						res.getWriter().println(json);
 					} else {
 						res.setStatus(404);
@@ -86,10 +87,10 @@ public class AccountController {
 
 				int userid = Integer.parseInt(portions[2]);
 				Account a = as.getAccountByUserid(userid);
+				
 				if (a != null) {
-					if (vu.isValidRole(logedInUser, "Admin") || vu.isValidRole(logedInUser, "Employee")
-							|| vu.isOwnerOfAccount(logedInUser, a.getAccountId())) {
-
+					if (vu.isValidRole(logedInUser, "Admin") || vu.isValidRole(logedInUser, "Employee") || vu.isOwnerOfAccount(logedInUser, a.getAccountId())) {
+					
 						res.setStatus(200);
 						String json = om.writeValueAsString(a);
 						res.getWriter().println(json);

@@ -20,7 +20,7 @@ public class AccountService {
 		return accountDao.getAccountById(AccountId);
 	}
 		
-	public Account getAccountByStatusId(Integer StatusId) {
+	public List<Account> getAccountByStatusId(Integer StatusId) {
 		return accountDao.getAccountByStatusId(StatusId);
 	}
 	public Account getAccountByUserid(Integer UserId) {

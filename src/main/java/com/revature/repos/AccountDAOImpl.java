@@ -79,30 +79,6 @@ public class AccountDAOImpl implements AccountDAO{
 	}
 	
 	
-
-	@Override
-	public Account getAccountByUserid(Integer UserId) {
-		
-		try(Connection conn =ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM account WHERE acc_user_id =?";
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setInt(1, UserId);
-			
-			ResultSet result = statement.executeQuery();
-
-			if(result.next()) {
-				
-				//return new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id"));
-				return new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id"),result.getInt("acc_user_id"));
-			}
-			
-		}catch(SQLException e) {
-			System.out.println(e);
-		}
-		
-		return null;
-	}
-	
 	@Override
 	public Account showSubmittedAccount(Integer UserId) {
 		try(Connection conn =ConnectionUtil.getConnection()){
@@ -252,12 +228,37 @@ public class AccountDAOImpl implements AccountDAO{
 
 
 	@Override
-	public Account getAccountByStatusId(Integer StatusId) {
+	public List<Account> getAccountByStatusId(Integer StatusId) {
 		
 		try(Connection conn =ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM account WHERE acc_status_id =?";
+			String sql = "SELECT * FROM account WHERE acc_status_id =" + StatusId;
+			
+			Statement statement = conn.createStatement();
+			
+			List<Account> list = new ArrayList<>();
+			
+			ResultSet result = statement.executeQuery(sql);
+			
+			while(result.next()) {
+				//return new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id"),result.getInt("acc_user_id"));
+				list.add(new Account(result.getInt("acc_id"),result.getDouble("acc_balance"),result.getInt("acc_status_id"),result.getInt("acc_type_id"),result.getInt("acc_user_id")));
+			}
+			
+			return list;
+			
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
+	@Override
+	public Account getAccountByUserid(Integer UserId) {
+		
+		try(Connection conn =ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM account WHERE acc_user_id =?";
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setInt(1, StatusId);
+			statement.setInt(1, UserId);
 			
 			ResultSet result = statement.executeQuery();
 
@@ -270,10 +271,9 @@ public class AccountDAOImpl implements AccountDAO{
 		}catch(SQLException e) {
 			System.out.println(e);
 		}
+		
 		return null;
 	}
-
-
 
 	@Override
 	public boolean deleteAccount(Integer AccountId) {

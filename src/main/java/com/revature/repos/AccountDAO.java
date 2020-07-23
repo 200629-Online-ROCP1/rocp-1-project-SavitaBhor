@@ -19,7 +19,7 @@ public interface AccountDAO {
 	
 	Account getAccountByUserid(Integer UserId);
 	
-	Account getAccountByStatusId(Integer StatusId);
+	List<Account> getAccountByStatusId(Integer StatusId);
 	
 	boolean updateAccount(Account account);
 	
