@@ -65,7 +65,9 @@ public class ValidationUtil {
 		List<User> list = userDao.getAllUsers();
 		for (User u : list) {
 
-			if (u.getUsername().equals(user.getUsername()) || u.getEmail().equals(user.getEmail())) {
+			if ((u.getUsername().equals(user.getUsername()) 
+					|| u.getEmail().equals(user.getEmail())) 
+					&& (u.getUserId() != user.getUserId())) {
 				return true;
 			}
 		}

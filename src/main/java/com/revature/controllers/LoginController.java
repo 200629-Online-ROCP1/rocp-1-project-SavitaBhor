@@ -2,6 +2,10 @@ package com.revature.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +51,16 @@ public class LoginController {
 				res.setStatus(200);
 				// Display loggedin user
 				User u = ls.getUserByUserName(l.username);
+				/********************************/
+//				SecureRandom random = new SecureRandom();
+//				byte[] salt = new byte[16];
+//				random.nextBytes(salt);
+//				MessageDigest md = MessageDigest.getInstance("SHA-512");
+//				md.update(salt);
+//				byte[] hashedPassword = md.digest(u.getPassword().getBytes(StandardCharsets.UTF_8));
+//				System.out.println(hashedPassword);
+
+				/*************************************/
 				if (u != null) {
 					String json = om.writeValueAsString(u);
 					res.getWriter().println(json);
